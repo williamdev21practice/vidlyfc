@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Like({ isLiked, onLike }) {
   let classes = "fa fa-heart";
@@ -10,5 +11,10 @@ function Like({ isLiked, onLike }) {
     </div>
   );
 }
+
+Like.propTypes = {
+  isLiked: PropTypes.bool.isRequired,
+  onLike: PropTypes.func.isRequired,
+};
 
 export default Like;

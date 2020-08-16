@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Like from "./common/like";
+import Paginate from "./common/paginate";
+import { paginate } from "./utils/paginate";
 
 function Movies(props) {
   const [movies, setMovies] = useState([]);
+  const [pageSize, setPageSize] = useState(3);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleDelete = (movie) => {
     const filteredMovies = movies.filter((mov) => mov._id !== movie._id);
@@ -14,6 +18,10 @@ function Movies(props) {
     const copyMovies = [...movies];
     copyMovies[index] = { ...movie, isLiked: !movie.isLiked };
     setMovies(copyMovies);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
@@ -78,11 +86,15 @@ function Movies(props) {
     setMovies(movies);
   }, []);
 
-  if (movies.length === 0) return <p>No movies to display!</p>;
+  const count = movies.length;
 
+  if (count === 0) return <p>No movies to display!</p>;
+
+  const moviesToDisplay = paginate(movies, currentPage, pageSize);
+  console.log(moviesToDisplay);
   return (
     <div className="row">
-      <p>Showing {movies.length} movies</p>
+      <p>Showing {count} movies</p>
 
       <table className="table table-bordered table-striped">
         <thead>
@@ -96,7 +108,7 @@ function Movies(props) {
           </tr>
         </thead>
         <tbody>
-          {movies.map((movie) => (
+          {moviesToDisplay.map((movie) => (
             <tr key={movie._id}>
               <td>{movie.title}</td>
               <td>{movie.genre.name}</td>
@@ -120,6 +132,12 @@ function Movies(props) {
           ))}
         </tbody>
       </table>
+      <Paginate
+        totalItems={count}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
