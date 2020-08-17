@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Like from "./common/like";
+
 import Paginate from "./common/paginate";
 import { paginate } from "./utils/paginate";
 import ListGroup from "./common/listGroup";
+import MoviesTable from "./moviesTable";
 
 function Movies(props) {
   const [genres, setGenres] = useState([]);
@@ -130,44 +131,13 @@ function Movies(props) {
         />
       </div>
       <div className="col">
-        <p>Showing {count} movies</p>
+        <MoviesTable
+          data={moviesToDisplay}
+          columnsLabel={["Title", "Genre", "Stock", "Rate", "", ""]}
+          onLike={handleLike}
+          onDelete={handleDelete}
+        />
 
-        <table className="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Genre</th>
-              <th>Stock</th>
-              <th>rate</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {moviesToDisplay.map((movie) => (
-              <tr key={movie._id}>
-                <td>{movie.title}</td>
-                <td>{movie.genre.name}</td>
-                <td>{movie.numberInStock}</td>
-                <td>{movie.dailyRentalrate}</td>
-                <td>
-                  <Like
-                    isLiked={movie.isLiked}
-                    onLike={() => handleLike(movie)}
-                  />
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(movie)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
         <Paginate
           totalItems={count}
           pageSize={pageSize}

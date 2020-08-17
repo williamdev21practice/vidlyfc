@@ -11,7 +11,7 @@ function ListGroup({
     <ul className="list-group">
       {items.map((item) => (
         <li
-          key={item[valueProperty] || "0"}
+          key={item[valueProperty] || ""}
           className={
             selectedItem[textProperty] === item[textProperty]
               ? "list-group-item active"
