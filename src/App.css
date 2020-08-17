@@ -1,3 +1,9 @@
+body {
+  box-sizing: border-box;
+  padding: 20px 0 0 0;
+  margin: 0;
+}
+
 .like-hover:hover {
   cursor: "pointer";
 }
