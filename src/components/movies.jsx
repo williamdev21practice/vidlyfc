@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
 
 import Paginate from "./common/paginate";
 import { paginate } from "./utils/paginate";
@@ -11,6 +12,7 @@ function Movies(props) {
   const [pageSize, setPageSize] = useState(2);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedGenre, setSelectedGenre] = useState({});
+  const [sortColumn, setSortColumn] = useState({ path: "title", order: "asc" });
 
   const handleDelete = (movie) => {
     const filteredMovies = movies.filter((mov) => mov._id !== movie._id);
@@ -33,6 +35,10 @@ function Movies(props) {
     setCurrentPage(1);
   };
 
+  const handleSort = (sortColumn) => {
+    setSortColumn(sortColumn);
+  };
+
   useEffect(() => {
     const genres = [
       { _id: 1, name: "Action" },
@@ -42,59 +48,59 @@ function Movies(props) {
     ];
     const movies = [
       {
-        _id: 1,
+        _id: "1",
         title: "The Terminator",
         genre: { _id: 1, name: "Action" },
         numberInStock: 5,
-        dailyRentalrate: 2.5,
+        dailyRentalRate: 2.5,
         isLiked: false,
       },
       {
-        _id: 2,
+        _id: "2",
         title: "Die Hardr",
         genre: { _id: 1, name: "Action" },
         numberInStock: 15,
-        dailyRentalrate: 3.5,
+        dailyRentalRate: 3.5,
         isLiked: false,
       },
       {
-        _id: 3,
+        _id: "3",
         title: "Trip to Italy",
         genre: { _id: 2, name: "Comedy" },
         numberInStock: 25,
-        dailyRentalrate: 1.5,
+        dailyRentalRate: 1.5,
         isLiked: true,
       },
       {
-        _id: 4,
+        _id: "4",
         title: "Get Out",
         genre: { _id: 4, name: "Thriller" },
         numberInStock: 3,
-        dailyRentalrate: 2.5,
+        dailyRentalRate: 2.5,
         isLiked: false,
       },
       {
-        _id: 5,
+        _id: "5",
         title: "The Terminator 2 ",
         genre: { _id: 1, name: "Action" },
         numberInStock: 5,
-        dailyRentalrate: 1.5,
+        dailyRentalRate: 1.5,
         isLiked: true,
       },
       {
-        _id: 6,
+        _id: "6",
         title: "The Prestige",
         genre: { _id: 4, name: "Thriller" },
         numberInStock: 25,
-        dailyRentalrate: 4.5,
+        dailyRentalRate: 4.5,
         isLiked: false,
       },
       {
-        _id: 7,
+        _id: "7",
         title: "Stone",
         genre: { _id: 3, name: "Drama" },
         numberInStock: 16,
-        dailyRentalrate: 1.5,
+        dailyRentalRate: 1.5,
         isLiked: false,
       },
     ];
@@ -107,7 +113,12 @@ function Movies(props) {
       ? movies.filter((movie) => movie.genre._id === selectedGenre._id)
       : movies;
 
-  const moviesToDisplay = paginate(filteredMovies, currentPage, pageSize);
+  const sortedMovies = _.orderBy(
+    filteredMovies,
+    [sortColumn.path],
+    [sortColumn.order]
+  );
+  const moviesToDisplay = paginate(sortedMovies, currentPage, pageSize);
 
   const count = filteredMovies.length;
   if (count === 0 && movies.length === 0) return <p>No movies to display!</p>;
@@ -131,11 +142,13 @@ function Movies(props) {
         />
       </div>
       <div className="col">
+        <p>Showing {count} movies</p>
         <MoviesTable
           data={moviesToDisplay}
-          columnsLabel={["Title", "Genre", "Stock", "Rate", "", ""]}
+          sortColumn={sortColumn}
           onLike={handleLike}
           onDelete={handleDelete}
+          onSort={handleSort}
         />
 
         <Paginate
